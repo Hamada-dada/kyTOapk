@@ -1,0 +1,766 @@
+#:import Label kivy.uix.label.Label
+#:import Clock kivy.clock.Clock
+#:import TriageStatusController TriageStatusController.TriageStatusController
+#:import Patient main.Patient
+#:import PatientAttributeCard cards.PatientAttributeCard
+#:import TriageSummaryCard cards.TriageSummaryCard
+#:import TriageSummaryGrid grids.TriageSummaryGrid
+#:import InformationButtonCard cards.InformationButtonCard
+#:import HeadlineCard cards.HeadlineCard
+#:import TitleCard cards.TitleCard
+#:import HeartRateCard cards.HeartRateCard
+#:import RespitoryRateCard cards.RespitoryRateCard
+#:import OxygenSaturationCard cards.OxygenSaturationCard
+#:import TemperatureCard cards.TemperatureCard
+#:import TriageOverviewGrid grids.TriageOverviewGrid
+#:import MDRaisedButton kivymd.uix.button
+#:import MDIcon kivymd.uix.button
+#:import MDButton kivymd.uix.button
+#:import IconButton kivymd.uix.button
+#:import TransparentButton buttons.TransparentButton
+#:import LocatePatientButton buttons.LocatePatientButton
+#:import Theme Theme.Theme
+#:import TriageSummary TriageSummary.TriageSummary
+#:import InfoPopup main.InfoPopup
+#:import PatientOverview main.PatientOverview
+#:import Window kivy.core.window
+#:import VitalSignsGraph Graphs.VitalSignsGraph
+#:import AlarmLogCard cards.AlarmLogCard
+# #:import OxygenSaturationGraph OxygenSaturationGraph.OxygenSaturationGraph
+
+
+<InfoPopup>
+    auto_dismiss: True
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .525}
+    size_hint: 0.95, 0.80
+    style: "outlined"
+    background_color: 192, 192, 192
+    MDIconButton:
+        icon: "close-circle-outline"
+        icon_size: Theme.informationIconSize
+        size_hint: 0.04, 0.04
+        pos_hint: {"center_x": 0.95, "center_y": 0.95}
+        on_release: root.dismiss()
+        
+    MDCard:
+        pos_hint: {"center_x": 0.27, "center_y": 0.95}
+        size_hint: 0.5, 0.08
+        MDLabel:
+            valign: "center"
+            halign: "left"
+            markup: True
+            text: "[u]System Information[/u]"
+            text_color: 0,0,0,0.1
+            font_size: root.width/20
+
+    FloatLayout:
+        pos_hint:{"center_x": 0.5, "center_y": 0.65}
+        size_hint: 1, 0.8
+        style: "outlined"
+        MDLabel:
+            markup: True
+            text: f'[u]Intended Purpose[/u]'
+            text_color: 0,0,0,0.6
+            font_size: root.width/30
+            pos_hint:{"center_x": 0.525, "center_y": 0.80}
+        MDLabel:
+            markup: False
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eleifend diam vitae ullamcorper. Vestibulum finibus elit elementum fermentum vehicula. Cras tincidunt mauris sed rutrum lacinia. Fusce eu tortor quis ligula tristique maximus. Vestibulum ut congue enim. Aenean porttitor odio at urna malesuada ultricies. Mauris maximus congue varius. Fusce nulla."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.5, "center_y": 0.72}
+            size_hint: 0.95, 0.2
+
+    FloatLayout:
+        pos_hint:{"center_x": 0.5, "center_y": 0.5}
+        size_hint: 1, 0.8
+        style: "outlined"
+        #background_color: 0,1,0,1
+
+        MDLabel:
+            markup: True
+            text: f'[u]Vital Signs[/u]'
+            text_color: 0,0,0,0.6
+            font_size: root.width/30
+            pos_hint:{"center_x": 0.525, "center_y": 0.81}
+
+        MDIcon:
+            icon: "cards-heart"
+            pos_hint: {"center_x": 0.041, "center_y": 0.75}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "The heart rate (HR) of each patient is displayed in beats per minute (bpm), and is estimated every second based on pulse oximetry."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.75}
+            size_hint: 0.75, 0.2
+            
+        MDIcon:
+            icon: "lungs"
+            pos_hint: {"center_x": 0.041, "center_y": 0.68}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "The respiratory rate (RR) of each patient is displayed in breaths per minute (bpm), and is estimated every second based on bioimpedance."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.68}
+            size_hint: 0.75, 0.2
+
+        MDIcon:
+            icon: "water-percent"
+            pos_hint: {"center_x": 0.041, "center_y": 0.61}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "The blood oxygen saturation (SpO2%) of each patient is displayed in percent (%), and is estimated every second based on pulse oximetry."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.61}
+            size_hint: 0.75, 0.2
+
+        MDIcon:
+            icon: "thermometer"
+            pos_hint: {"center_x": 0.041, "center_y": 0.54}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "The skin temperature of each patient is displayed in degrees celsius (°C), and is estimated every second."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.54}
+            size_hint: 0.75, 0.2
+    
+    FloatLayout:
+        pos_hint:{"center_x": 0.5, "center_y": 0.2}
+        size_hint: 1, 0.8
+        style: "outlined"
+
+        MDLabel:
+            markup: True
+            text: f'[u]Alerts[/u]'
+            text_color: 0,0,0,0.6
+            font_size: root.width/30
+            pos_hint:{"center_x": 0.525, "center_y": 0.81}
+
+        MDIcon:
+            icon: "alert"
+            pos_hint: {"center_x": 0.041, "center_y": 0.75}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "Vital sign alarms occur when the measurement of any vital sign becomes abnormal or otherwise suggests that the patient is in a critical condition"
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.75}
+            size_hint: 0.75, 0.2
+            
+        MDIcon:
+            icon: "battery-low"
+            pos_hint: {"center_x": 0.041, "center_y": 0.68}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "Low battery warnings indicate that the battery level of a wearable device is low and must be charged or replaced."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.68}
+            size_hint: 0.75, 0.2
+
+        MDIcon:
+            icon: "wifi-alert"
+            pos_hint: {"center_x": 0.041, "center_y": 0.61}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "Unintentionally inactive device warnings indicate that a wearable device has lost connection or shut off. The device should be checked immmediately."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.61}
+            size_hint: 0.75, 0.2
+
+        MDIcon:
+            icon: "wrench-cog-outline"
+            pos_hint: {"center_x": 0.041, "center_y": 0.54}
+            theme_icon_color: "Custom"
+            icon_color: "#ff3b30"
+        MDLabel:
+            markup: False
+            text: "Faulty device warnings indicate that a wearable device is malfunctional, and is producing erroneous measurements. The device should be checked immediately."
+            style: "Bold"
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.44, "center_y": 0.54}
+            size_hint: 0.75, 0.2
+
+    FloatLayout:
+        pos_hint:{"center_x": 0.5, "center_y": -0.1}
+        size_hint: 1, 0.8
+        style: "outlined"
+        MDLabel:
+            markup: True
+            text: '[u]System Version[/u]'
+            text_color: 0,0,0,0.6
+            font_size: root.width/30
+            pos_hint:{"center_x": 0.525, "center_y": 0.81}
+        MDLabel:
+            markup: True
+            text_color: 0,0,0,0
+            font_size: root.width/50
+            pos_hint:{"center_x": 0.4, "center_y": 0.73}
+            size_hint: 0.75, 0.2
+            text: f'[b]Triage method:[/b] DEPT\n[b]Release:[/b] 1.0\n[b]Database:[/b] hst-24-st-6-6405'
+
+
+    MDLabel:
+        pos_hint: {"center_x": 0.82, "center_y": 0.08}
+        size_hint: 0.3, 0.3
+        markup: True
+        text: f'[b]The Vital Patch[/b] [size={12}]powered by [/size][b]Apollo[/b]\nhst-24-st-6-6405\nAalborg University\nSelma Lagerløfs Vej 249\n9220 Aalborg, Denmark'
+        font_size: root.width/50
+        text_color: 0,0,0,0
+
+    Image:
+        source: "CE_marking.png"
+        size_hint: 0.062, 0.062
+        pos_hint: {"center_x": 0.93, "center_y": 0.07}
+
+
+<PatientOverview>
+    auto_dismiss: True
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .525}
+    size_hint: 0.95, 0.80
+    style: "outlined"
+    background_color: 197, 206, 228
+    # patientId: self.patientId #This should be changed based on the patientId passed to each instance
+
+
+    MDIconButton:
+        icon: "close-circle-outline"
+        icon_size: Theme.informationIconSize
+        size_hint: 0.04, 0.04
+        pos_hint: {"center_x": 0.95, "center_y": 0.95}
+        on_release: root.dismiss()
+
+    MDCard:
+        pos_hint: {"center_x": 0.42, "center_y": 0.95}
+        size_hint: 0.8, 0.08
+        MDLabel:
+            markup: True
+            valign: "center"
+            halign: "left"
+            markup: True
+            text: f"[b][size={Theme.patientOverviewHeadlineTextSize}]Patient {Patient.allPatients[root.patientId-2].patientId}:[/b] Detailed patient overview[/size]"
+            text_color: 0,0,0,0.1
+            font_size: root.width/20
+
+    MDCard:
+        size_hint: 0.98, 0.0015
+        pos_hint: {"center_x": 0.5, "center_y": 0.92}
+        md_bg_color: "black"
+
+
+
+    BoxLayout:
+        id: graph_layout
+        pos_hint: {"center_x": 0.32, "center_y": 0.41}
+        size_hint: 0.6, 0.8
+        style: "outlined"
+        md_bg_color: Theme.triageDefault
+        patientId: root.patientId
+
+
+        on_parent: self.add_widget(VitalSignsGraph(self.patientId, size_hint = (0.000001, 1.125)))
+
+
+
+    FloatLayout:
+        pos_hint:{"center_x": 0.5, "center_y": 0.5}
+        size_hint: 1, 0.8
+        style: "outlined"
+        #background_color: 0,1,0,1
+
+        MDLabel:
+            markup: True
+            text: f'[b][u]Vital Signs[/u][/b]'
+            text_color: 0,0,0,0.6
+            font_size: root.width/30
+            pos_hint:{"center_x": 0.525, "center_y": 0.98}
+            # md_bg_color: Theme.triageDefault*
+
+        AlarmLogCard:
+            size_hint: 0.36, 0.5
+            pos_hint:{"center_x": 0.775, "center_y": 0.6}
+            # md_bg_color: "#000000"
+        
+        LocatePatientButton:
+            size_hint: 0.36, 0.3
+            pos_hint:{"center_x": 0.775, "center_y": 0.15}
+
+    
+
+
+
+
+<PatientAttributeCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "50dp"
+    
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            text: root.text
+            font_size: "28sp"
+            halign: "center"
+            color: "black"
+            bold: True
+
+<TransparentButton>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "50dp"
+    size_hint: 1, None
+    background_color: 0, 0, 0, 0
+    opacity: 0.7
+    patientIndex: 0
+    # patientId: root.patientId
+    on_press: app.patientOverviews[root.patientId].open()
+
+
+
+<TriageSummaryCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: root.text
+            halign: "center"
+            valign: "top"
+            color: "white"
+            bold: True
+
+<InformationButtonCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDIconButton:
+            name: "InfoButton"
+            icon: "information-outline"
+            icon_size: Theme.informationIconSize
+            theme_icon_color: "Custom"
+            icon_color: "#ffffff"
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+            on_release:
+                InfoPopup().open()
+
+<AlarmLogCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+    md_bg_color: Theme.backgroundColor
+    style: "outlined"
+    line_color: Theme.triageRed
+    line_width: 1.2
+
+    MDRelativeLayout:
+        MDIcon:
+            icon: "alert-octagon"
+            theme_text_color: "Custom"
+            text_color: Theme.triageRed
+            pos_hint: {"center_x": .16, "center_y": .875}
+        
+        MDIcon:
+            icon: "alert-octagon"
+            theme_text_color: "Custom"
+            text_color: Theme.triageRed
+            pos_hint: {"center_x": .84, "center_y": .875}
+        
+        MDLabel:
+            markup: True
+            id: label
+            text: "Alarm log"
+            font_size: "14sp"
+            halign: "center"
+            color: "black"
+            bold: True
+            pos_hint: {"center_x": .5, "center_y": .875}
+
+        MDLabel:
+            markup: True
+            id: label
+            text: "--------------------------------------------\n2 minutes ago: Severe bradychardia\n--------------------------------------------\n47 minutes ago: Tachypnea\n--------------------------------------------\n2 hours ago: Severe bradychardia\n--------------------------------------------"
+            font_size: "14sp"
+            halign: "center"
+            color: "black"
+            bold: True
+            pos_hint: {"center_x": .5, "center_y": .5}
+
+
+<HeadlineCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .7}
+    size: root.height, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: root.text
+            halign: "center"
+            valign: "top"
+            color: "white"
+            bold: True
+
+<HeartRateCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: "HR"
+            font_size: Theme.triageHeadlineTextSize
+            halign: "center"
+            pos_hint: {"center_x": .5, "center_y": 0.7}
+            #valign: "top"
+            color: "white"
+            bold: True
+        MDIcon:
+            icon: "cards-heart"
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+            pos_hint: {"center_x": .5, "center_y": .35}
+
+<RespitoryRateCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: "RR"
+            font_size: Theme.triageHeadlineTextSize
+            halign: "center"
+            pos_hint: {"center_x": .5, "center_y": 0.7}
+            color: "white"
+            bold: True
+        MDIcon:
+            icon: "lungs"
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+            pos_hint: {"center_x": .5, "center_y": .35}
+
+<OxygenSaturationCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: "SpO2"
+            font_size: Theme.triageHeadlineTextSize
+            halign: "center"
+            pos_hint: {"center_x": .5, "center_y": 0.7}
+            color: "white"
+            bold: True
+        MDIcon:
+            icon: "water-percent"
+            font_size: Theme.oxygenSaturationIconSize
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+            pos_hint: {"center_x": .5, "center_y": .35}
+
+<TemperatureCard>
+    padding: 0
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size: root.width, "70dp"
+
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: "Skin temperature"
+            font_size: Theme.triageHeadlineTextSize*0.95
+            halign: "center"
+            pos_hint: {"center_x": .5, "center_y": 0.7}
+            color: "white"
+            bold: True
+        MDIcon:
+            icon: "thermometer"
+            font_size: Theme.temperatureIconSize
+            theme_text_color: "Custom"
+            text_color: "#ffffff"
+            pos_hint: {"center_x": .5, "center_y": .35}
+
+
+<TitleCard>
+    #pos_hint: {"center_x": .5, "center_y": .5}
+    # size: root.width, root.height*0.05
+    # size_hint: 1, 0.01
+    size: root.width, root.height
+    MDRelativeLayout:
+        MDLabel:
+            markup: True
+            id: label
+            text: "TriageOverview"
+            halign: "center"
+            font_size: Theme.titleTextSize
+            valign: "center"
+            color: "black"
+            bold: True
+            # height: "40dp"
+
+
+
+<LocatePatientButton>
+    MDCard:
+        MDRelativeLayout:
+            MDFloatingActionButton:
+                padding: 0
+                pos_hint: {"center_x": .5, "center_y": .5}
+                size: root.width, root.height
+                md_bg_color: Theme.locatePatientButtonColor
+                line_width: 1.2
+                line_color: "#000000"
+                text: "MDRaisedButton"
+                theme_text_color: "Custom"
+                text_color: "#000000"
+                # rounded_button: True
+            MDLabel:
+                markup: True
+                text: f'[b]Locate patient[/b]'
+                font_size: root.width/5
+                halign: "center"
+                valign: "center"
+
+
+<TriageOverviewGrid>
+    size_hint: 1, None
+    height: root.height
+    width: root.width
+    
+    GridLayout:
+        id: patientGrid
+        size_hint: 1, None
+        height: root.height
+        width: root.width
+        cols: 6
+        spacing: 0, 2
+        
+        on_parent: TriageOverviewGrid.createTriageOverviewGrid(self, root)
+        on_parent: Clock.schedule_interval(lambda dt: TriageOverviewGrid.updateTriageOverviewGrid(self, root), 1)
+        
+        
+    
+    GridLayout:
+        id: triageOverviewButtons
+        size_hint: 1, None
+        height: root.height
+        width: root.width
+        cols: 1
+        spacing: 0, 2
+        # pos_hint: {'x': (anchor_layout.width - self.width) / (2 * anchor_layout.width), 'y': (anchor_layout.height - self.height) / (2 * anchor_layout.height)}
+
+        # ↓ int(foo/2) is a workaround for the bug where patient are added to Patient.allPatients twice
+        on_parent:
+            for i in range(int(len(Patient.allPatients)/2)): data = TriageStatusController.passCorrectData(i);\
+            self.add_widget(TransparentButton(\
+            line_color=(0.2, 0.2, 0.2, 0.8),\
+            size_hint_y = None,\
+            height = root.height,\
+            patientId = i+1)) # +1 is a workaround to display graphs for the correct patient
+
+
+MDScreen:
+
+    GridLayout:
+        # size_hint: 1, None
+        height: root.height
+        width: root.width
+        pos_hint: {"center_x": 0.5, "center_y":0.5}
+        row_default_height: "70dp"
+        row_force_default: True
+        cols: 1
+        cols_minimum: {0: root.width*0.9, 1: root.width*0.1}
+
+        GridLayout:
+            # size_hint: 1, None
+            height: root.height
+            width: root.width
+            pos_hint: {"center_x": 0.5, "center_y":0.5}
+            row_default_height: "70dp"
+            row_force_default: True
+            cols: 2
+            cols_minimum: {0: root.width*0.9, 1: root.width*0.1}
+
+
+            GridLayout:
+                id: "Top app bar grid"
+                size: root.width, root.height
+                cols: 6
+                cols_minimum: {0: root.width*0.25, 1: root.width*0.13, 2: root.width*0.13, 3: root.width*0.13, 4: root.width*0.13, 5: root.width*0.13}
+                spacing: 1
+                pos_hint: {"center_x": 0.5, "center_y":1}
+                rowSpan: 2
+                on_parent: TriageSummaryGrid.createTriageSummary(self,root)
+                on_parent: Clock.schedule_interval(lambda dt: TriageSummaryGrid.updateTriageSummary(self, root), 1)
+
+            GridLayout:
+                id: "Top app bar grid"
+                size: root.width, root.height
+                # size_hint: 1, None
+                cols: 1
+                spacing: 1
+                pos_hint: {"center_x": 0.5, "center_y":1}
+                rowSpan: 2
+                on_parent: TriageSummaryGrid.getInformationButton(self, root)
+           
+        GridLayout:
+            
+            width: root.width
+            cols: 1
+            pos_hint: {"center_x": 0.5, "center_y": 1}
+            
+            TitleCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "filled"
+                md_bg_color: Theme.backgroundColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                pos_hint: {"center_x": 0.5, "center_y": 1}
+                
+                
+            
+
+        GridLayout:
+            id: "Triage overview headlines"
+            size: root.width, root.height
+            #height: root.height - 130
+            #height: root.height*0.3
+            #width: root.width
+            cols: 6
+            spacing: 0, 3
+            pos_hint: {"center_x": 0.5, "center_y": 0}
+            #row_default_height: root.height*0.001
+            #row_force_default: True
+
+            HeadlineCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                text: f'[size={Theme.triageHeadlineTextSize}]Patient ID[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: root.height*0.05, root.width*0.16
+                #height: root.height / 8
+            HeadlineCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                text: f'[size={Theme.triageHeadlineTextSize}]Triage category[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: "140dp", "50dp"
+                #height: root.height / 8
+            HeartRateCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                #text: f'[size={Theme.triageHeadlineTextSize}]HR\n[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: "140dp", "50dp"
+                #height: root.height / 8
+            RespitoryRateCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                text: f'[size={Theme.triageHeadlineTextSize}]RR\n[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: "140dp", "50dp"
+                #height: root.height / 8
+            OxygenSaturationCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                text: f'[size={Theme.triageHeadlineTextSize}]SpO2%\n[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: "140dp", "50dp"
+                #height: root.height / 8
+            TemperatureCard:
+                line_color: (0.2, 0.2, 0.2, 0.8)
+                style: "outlined"
+                text: f'[size={Theme.triageHeadlineTextSize}]Temperature\n[/size]'
+                md_bg_color: Theme.triageHeadlineColor
+                shadow_softness: 1
+                shadow_offset: (0, 0)
+                radius: 0
+                size_hint_y: None
+                #size: "140dp", "50dp"
+                #height: root.height / 8
+
+        GridLayout:
+            cols:1
+            # pos_hint: {"center_x": 0.5, "center_y": 1.1}
+            size: root.width, root.height
+            
+            
+            ScrollView:
+                # size: self.size
+                size_hint: 1, None
+                height: root.height - 200
+                width: root.width
+                do_scroll_x: True
+                do_scroll_y: True
+                #pos_hint: {"center_x": 0.5, "center_y": 1}
+
+                TriageOverviewGrid:
+
+                    
+
+
